@@ -195,6 +195,22 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .note{border:1px dashed var(--line);padding:14px;color:var(--dim);font-size:13px}
 .cta{display:inline-flex;gap:8px;align-items:center;padding:10px 14px;background:var(--ch);color:var(--void);text-decoration:none;text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:600}
 
+/* La Entervista */
+.ent-top{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:28px;align-items:start}
+.ent .lede{font-size:clamp(16px,1.6vw,19px);line-height:1.55}
+.subh{font:800 26px/1 var(--f-display);text-transform:uppercase;margin:36px 0 14px;color:var(--ch)}
+@media (max-width:820px){.ent-top{grid-template-columns:minmax(0,1fr)}.ent-poster{max-width:340px}}
+
+/* música */
+.snd{all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border:1px solid var(--line);color:var(--dim)}
+.snd:hover{color:var(--ink);border-color:var(--dim)}
+.snd[aria-pressed="true"]{color:var(--ch);border-color:var(--ch)}
+.eq{display:inline-flex;gap:2px;align-items:flex-end;height:12px}
+.eq i{width:2px;height:3px;background:currentColor}
+.snd[aria-pressed="true"] .eq i{animation:eq .9s ease-in-out infinite}
+.snd[aria-pressed="true"] .eq i:nth-child(2){animation-delay:-.3s}.snd[aria-pressed="true"] .eq i:nth-child(3){animation-delay:-.6s}
+@keyframes eq{0%,100%{height:3px}50%{height:12px}}
+
 /* contacto */
 form{display:grid;gap:12px}
 label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);display:grid;gap:6px}
@@ -239,6 +255,7 @@ main.mosh{animation:mosh .5s steps(6) 1}
   <filter id="tint-c"><feColorMatrix type="matrix" values="0 0 0 0 0  0.95 0 0 0 0  0.96 0 0 0 0  0 0 0 1 0"/></filter>
 </svg>
 <canvas id="mosh" aria-hidden="true"></canvas>
+<audio id="bgm" src="audio/o-por-deo.mp3" loop preload="none"></audio>
 <div class="scan" aria-hidden="true"></div>
 <div class="vignette" aria-hidden="true"></div>
 
@@ -251,6 +268,7 @@ main.mosh{animation:mosh .5s steps(6) 1}
       <a href="#vestidor-violeta" data-nav="vestidor">CH-03 Vestidor Violeta</a>
       <a href="#contacto" data-nav="contacto" data-i18n="nav_contact">Contacto</a>
     </div>
+    <button class="snd" id="snd" type="button" aria-pressed="false" title="O Por Deo — Mantrixa"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="sndlbl">♪</span></button>
     <div class="lang" role="group" aria-label="Idioma">
       <button type="button" data-lang="es" aria-pressed="true">ES</button>
       <button type="button" data-lang="en" aria-pressed="false">EN</button>
@@ -357,6 +375,15 @@ const MUSIC_LINKS = [["Spotify","https://open.spotify.com/artist/30ATOM87vmr5aSr
 const SOCIAL = [["Instagram","https://www.instagram.com/mantrixa"],["YouTube","https://www.youtube.com/@mantrixa"],["TikTok","https://www.tiktok.com/@mantrixa"],["Twitch","https://www.twitch.tv/mantrixa"],["LinkedIn","https://www.linkedin.com/in/mantrixa/"],["X","https://x.com/mantrxa"],["Facebook","https://www.facebook.com/mantrixaTV"],["IMDb","https://www.imdb.com/name/nm16643967/"]];
 const ART = [["Zora","https://zora.co/mantrixa"],["OpenSea","https://opensea.io/mantrixa"],["Foundation","https://foundation.app/@mantrixa"],["Politrixa · Redbubble","http://mantrixa.redbubble.com"]];
 const DJ_LINKS = [["YouTube","https://youtu.be/yHPDKM_j4nk"],["Mixcloud","https://www.mixcloud.com/djportatil"],["Instagram","https://www.instagram.com/djportatil"],["TikTok","https://www.tiktok.com/@djportatil"],["X","https://x.com/djportatil"],["Clásicos 2K · Mixcloud","https://www.mixcloud.com/mantrixa/"]];
+const ENT_EPS = [
+ {t:"Episodio 7: El Jason", s:"Especial de Halloween", d:"6:07", yt:"BbLbMgXua2k", img:"ent-ep7-jason"},
+ {t:"Episodio 6: Alienado", s:"", d:"2:28", yt:"Wc0MvjPAPjA", img:"ent-ep6-alienado"},
+ {t:"Episodio 5: El Conductor", s:"", d:"2:31", yt:"3EWs-tBcMxY", img:"ent-ep5-conductor"},
+ {t:"Episodio 4: La Chiki", s:"", d:"3:54", yt:"lKUOLsvcppY", img:"ent-ep4-chiki"},
+ {t:"Episodio 3: Lo Pavo Rancho", s:"", d:"5:05", yt:"4LOqihup-Vc", img:"ent-ep3-pavo-rancho"},
+ {t:"El Sátiro del Choripán", s:"¿Quién será, quién será?", d:"3:01", yt:"tuwbUh65pZ8", img:"ent-satiro-choripan"}
+];
+const ENT_LINKS = [["YouTube · @LaEntervista","https://www.youtube.com/@LaEntervista"],["TikTok · @laentervista","https://www.tiktok.com/@laentervista"],["Instagram · @laentervista","https://www.instagram.com/laentervista"],["IMDb","https://www.imdb.com/title/tt38649700/"],["Linktree","https://linktr.ee/laentervista"]];
 const VV_LINKS = [["Vimeo","https://vimeo.com/vestidorvioleta"],["IMDb","https://www.imdb.com/search/title/?companies=co1092474"],["FilmFreeway","https://filmfreeway.com/VestidorVioleta"],["Sueño finlandés y paranoico","https://vimeo.com/1064097394"]];
 
 /* ================= I18N ================= */
@@ -380,8 +407,12 @@ const T = {
   disco:"Discografía", disco_sub:"neo-futurismo · cyberpunk · retro · lofi · glitch",
   listen:"Escuchar en",
   art:"Arte digital", art_p:"Piezas digitales y colecciones on-chain, más la línea de merch Politrixa.",
-  ent:"La Entervista", ent_p:"Un talk show absurdo con entrevistados generados por IA. Parodia, cortes cortos y personajes que no existen.",
-  ent_cta:"Ver La Entervista",
+  ent:"La Entervista", ent_p:"Mi programa de humor: un talk show absurdo producido por Vestidor Violeta.",
+  ent_cta:"Ver La Entervista", ent_go:"Ir a La Entervista",
+  ent_tag:"serie de comedia · 2022 – hoy · producción Vestidor Violeta",
+  ent_long:"Un falso talk show surrealista donde nada sale como estaba planeado. Cada episodio arranca como una entrevista simple y termina en caos: los invitados, el equipo y hasta el propio programa pierden el control. Humor argentino absurdo, bizarro y sin filtro, hecho casi por completo con IA, con parodias de clásicos de Hollywood y entrevistados que no existen.",
+  ent_eps:"Episodios", ent_where:"Seguí La Entervista", host:"Conductor",
+  music_on:"Sonido", music_off:"Silencio",
   social:"Señales",
   d_tag:"CH-02 // walking dj · madrid",
   d_intro:"DJ en formato portátil. Sets en distintos lugares de la ciudad, mezclando sonido, contexto y momento. Cada set se graba caminando.",
@@ -416,8 +447,12 @@ const T = {
   disco:"Discography", disco_sub:"neo-futurism · cyberpunk · retro · lofi · glitch",
   listen:"Listen on",
   art:"Digital art", art_p:"Digital pieces and on-chain collections, plus the Politrixa merch line.",
-  ent:"La Entervista", ent_p:"An absurd talk show with AI-generated guests. Parody, short cuts and characters who don't exist.",
-  ent_cta:"Watch La Entervista",
+  ent:"La Entervista", ent_p:"My comedy show: an absurd talk show produced by Vestidor Violeta.",
+  ent_cta:"Watch La Entervista", ent_go:"Go to La Entervista",
+  ent_tag:"comedy series · 2022 – now · a Vestidor Violeta production",
+  ent_long:"A surreal mock talk show where nothing goes to plan. Every episode starts as a simple interview and dissolves into chaos as the guests, the crew and even the show itself lose control. Absurd, bizarre, unfiltered Argentine humour, made almost entirely with AI, with Hollywood parodies and guests who don't exist.",
+  ent_eps:"Episodes", ent_where:"Follow La Entervista", host:"Host",
+  music_on:"Sound", music_off:"Muted",
   social:"Signals",
   d_tag:"CH-02 // walking dj · madrid",
   d_intro:"A DJ in portable format. Sets in different corners of the city, mixing sound, context and moment. Every set is recorded on foot.",
@@ -528,7 +563,7 @@ function mantrixa(){
     <section><header style="margin-bottom:14px"><h2 style="font:800 clamp(30px,4vw,44px)/1 var(--f-display);text-transform:uppercase;margin:0">${t("art")}</h2></header>
       <p style="color:var(--dim);margin:0 0 14px">${t("art_p")}</p><div class="links">${L(ART)}</div></section>
     <section><header style="margin-bottom:14px"><h2 style="font:800 clamp(30px,4vw,44px)/1 var(--f-display);text-transform:uppercase;margin:0">${t("ent")}</h2></header>
-      <p style="color:var(--dim);margin:0 0 14px">${t("ent_p")}</p><a class="cta" href="https://linktr.ee/laentervista" target="_blank" rel="noopener">${t("ent_cta")} ↗</a></section>
+      <p style="color:var(--dim);margin:0 0 14px">${t("ent_p")}</p><a class="cta" href="#vestidor-violeta">${t("ent_go")} →</a></section>
   </div>
 
   <section class="sec"><header><h2>${t("social")}</h2></header><div class="links">${L(SOCIAL)}</div></section>`;
@@ -551,6 +586,18 @@ function vv(){
   return head(t("v_tag"),"Vestidor Violeta",t("v_intro")) + `
   <section class="sec"><header><h2>${t("films")}</h2></header>
     <div class="works">${films.map(w=>workCard(w).replace('</div></article>',`<a class="cta" style="align-self:flex-start;margin-top:8px" href="${w.link}" target="_blank" rel="noopener">${t("watch").replace("set","film")} ↗</a></div></article>`)).join("")}</div></section>
+  <section class="sec ent" id="la-entervista">
+    <header><h2>La Entervista<small>${t("ent_tag")}</small></h2></header>
+    <div class="ent-top">
+      <figure class="portrait ent-poster" style="margin:0;aspect-ratio:1"><img src="img/entervista-poster.webp" alt="Afiche de La Entervista: el conductor en un sillón frente a un telón amarillo"><figcaption>${t("host")} · Mantrixa</figcaption></figure>
+      <div style="display:grid;gap:16px;align-content:start;min-width:0">
+        <p class="lede" style="margin:0;max-width:62ch">${t("ent_long")}</p>
+        <div class="links">${L(ENT_LINKS)}</div>
+      </div>
+    </div>
+    <h3 class="subh">${t("ent_eps")}</h3>
+    <div class="sets">${ENT_EPS.map(e=>videoCard(e.yt,e.t,`<span>${e.s}</span><span style="text-align:right">${e.d}</span>`,e.img)).join("")}</div>
+  </section>
   <section class="sec"><header><h2>${t("where")}</h2></header><div class="links">${L(VV_LINKS)}</div></section>`;
 }
 
@@ -647,11 +694,29 @@ function mosh(dur=480){
 document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{
   lang=b.dataset.lang; try{localStorage.setItem("mtx-lang",lang)}catch(e){}
   document.querySelectorAll(".lang button").forEach(x=>x.setAttribute("aria-pressed",x===b));
-  render(); mosh(300);
+  render(); mosh(300); sndUI();
 });
 document.querySelectorAll(".lang button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lang===lang));
 addEventListener("hashchange",render);
 render();
+
+/* música de fondo: "O Por Deo" de Mantrixa, en loop a -3 dB.
+   Los navegadores no dejan sonar audio sin interacción: arranca con el primer toque/click/tecla,
+   salvo que el visitante lo haya silenciado antes. */
+const bgm=document.getElementById("bgm"), snd=document.getElementById("snd"), sndlbl=document.getElementById("sndlbl");
+bgm.volume=Math.pow(10,-3/20); /* -3 dB ≈ 0.708 */
+let muted=false; try{muted=localStorage.getItem("mtx-mute")==="1"}catch(e){}
+function sndUI(){const on=!bgm.paused; snd.setAttribute("aria-pressed",on); sndlbl.textContent=(on?t("music_on"):t("music_off"))+" · O Por Deo";}
+function play(){bgm.play().then(sndUI).catch(sndUI)}
+snd.addEventListener("click",e=>{e.stopPropagation();
+  if(bgm.paused){muted=false;play()}else{muted=true;bgm.pause();sndUI()}
+  try{localStorage.setItem("mtx-mute",muted?"1":"0")}catch(e){}});
+const firstTouch=(e)=>{ if(e.target.closest&&e.target.closest("#snd")) return; if(!muted&&bgm.paused) play(); ["pointerdown","keydown","touchstart"].forEach(ev=>removeEventListener(ev,firstTouch,true)); };
+["pointerdown","keydown","touchstart"].forEach(ev=>addEventListener(ev,firstTouch,true));
+/* si el video de un set empieza a sonar, la música baja; al cerrar no vuelve sola */
+document.addEventListener("click",e=>{ if(e.target.closest(".frame .play")&&CAN_EMBED){ bgm.pause(); sndUI(); } });
+bgm.addEventListener("play",sndUI); bgm.addEventListener("pause",sndUI);
+sndUI();
 </script>
 
 </body>
