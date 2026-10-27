@@ -412,11 +412,11 @@ const T = {
   ent_tag:"serie de comedia · 2022 – hoy · producción Vestidor Violeta",
   ent_long:"Un falso talk show surrealista donde nada sale como estaba planeado. Cada episodio arranca como una entrevista simple y termina en caos: los invitados, el equipo y hasta el propio programa pierden el control. Humor argentino absurdo, bizarro y sin filtro, hecho casi por completo con IA, con parodias de clásicos de Hollywood y entrevistados que no existen.",
   ent_eps:"Episodios", ent_where:"Seguí La Entervista", host:"Conductor",
-  music_on:"Sonido", music_off:"Silencio",
+  music_on:"Sonando", music_off:"▶ Play",
   social:"Señales",
   d_tag:"CH-02 // walking dj · madrid",
   d_intro:"DJ en formato portátil. Sets en distintos lugares de la ciudad, mezclando sonido, contexto y momento. Cada set se graba caminando.",
-  sets:"Sets", set:"Set", watch:"Ver set",
+  sets:"Sets", set:"Set", watch:"Ver",
   coffee:"Un cafecito pal DJ", coffee_p:"Tu apoyo impulsa nuevos mixes, sesiones en vivo y proyectos audiovisuales.",
   v_tag:"CH-03 // productora",
   v_intro:"Empujando los límites de la creatividad a través del cine, la animación y lo multimedia.",
@@ -452,11 +452,11 @@ const T = {
   ent_tag:"comedy series · 2022 – now · a Vestidor Violeta production",
   ent_long:"A surreal mock talk show where nothing goes to plan. Every episode starts as a simple interview and dissolves into chaos as the guests, the crew and even the show itself lose control. Absurd, bizarre, unfiltered Argentine humour, made almost entirely with AI, with Hollywood parodies and guests who don't exist.",
   ent_eps:"Episodes", ent_where:"Follow La Entervista", host:"Host",
-  music_on:"Sound", music_off:"Muted",
+  music_on:"Playing", music_off:"▶ Play",
   social:"Signals",
   d_tag:"CH-02 // walking dj · madrid",
   d_intro:"A DJ in portable format. Sets in different corners of the city, mixing sound, context and moment. Every set is recorded on foot.",
-  sets:"Sets", set:"Set", watch:"Watch set",
+  sets:"Sets", set:"Set", watch:"Watch",
   coffee:"Buy the DJ a coffee", coffee_p:"Your support fuels new mixes, live sessions and audiovisual projects.",
   v_tag:"CH-03 // production company",
   v_intro:"Pushing the boundaries of creativity through film, animation and multimedia.",
@@ -585,7 +585,7 @@ function vv(){
   const films = WORKS.filter(w=>w.by==="VV");
   return head(t("v_tag"),"Vestidor Violeta",t("v_intro")) + `
   <section class="sec"><header><h2>${t("films")}</h2></header>
-    <div class="works">${films.map(w=>workCard(w).replace('</div></article>',`<a class="cta" style="align-self:flex-start;margin-top:8px" href="${w.link}" target="_blank" rel="noopener">${t("watch").replace("set","film")} ↗</a></div></article>`)).join("")}</div></section>
+    <div class="works">${films.map(w=>workCard(w).replace('</div></article>',`<a class="cta" style="align-self:flex-start;margin-top:8px" href="${w.link}" target="_blank" rel="noopener">${t("watch")} ↗</a></div></article>`)).join("")}</div></section>
   <section class="sec ent" id="la-entervista">
     <header><h2>La Entervista<small>${t("ent_tag")}</small></h2></header>
     <div class="ent-top">
