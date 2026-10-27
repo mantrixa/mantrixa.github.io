@@ -1,3 +1,3 @@
 # mantrixa.github.io
 
-Web personal de Mantrixa · DJPortátil · Vestidor Violeta. Estática, sin dependencias: se publica con GitHub Pages desde la rama main.
+Web personal de Mantrixa · DJportatil · Vestidor Violeta. Estática, sin dependencias: se publica con GitHub Pages desde la rama main.

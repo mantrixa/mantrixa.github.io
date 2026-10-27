@@ -85,12 +85,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .boot{padding-block:44px 8px;color:var(--dim);font-size:13px;min-height:7.5em}
 .boot b{color:var(--ch);font-weight:400}
 .hero h1{margin:6px 0 0;line-height:0}
-.wordmark{position:relative;display:block;width:min(100%,980px);aspect-ratio:1600/426}
+.wordmark{position:relative;display:block;width:min(100%,980px);aspect-ratio:1600/374}
 .wordmark img{position:absolute;inset:0;width:100%;height:100%;display:block}
 .wordmark .r,.wordmark .b{mix-blend-mode:screen;opacity:.85}
 .wordmark .r{filter:url(#tint-m);animation:wm1 4.2s infinite steps(1)}
 .wordmark .b{filter:url(#tint-c);animation:wm2 3.6s infinite steps(1)}
-.wordmark .base{filter:brightness(.9) contrast(1.15);mix-blend-mode:screen}
+.wordmark .base{filter:none}
 @keyframes wm1{0%,84%,100%{transform:translate(-3px,0);clip-path:inset(0)}86%{transform:translate(-16px,-3px);clip-path:inset(20% 0 52% 0)}88%{transform:translate(10px,2px);clip-path:inset(58% 0 12% 0)}90%{transform:translate(-5px,0);clip-path:inset(0 0 70% 0)}}
 @keyframes wm2{0%,78%,100%{transform:translate(3px,0);clip-path:inset(0)}80%{transform:translate(18px,3px);clip-path:inset(40% 0 35% 0)}83%{transform:translate(-9px,0);clip-path:inset(5% 0 80% 0)}}
 .hero .who{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.6fr);gap:28px;margin-top:26px;align-items:start}
@@ -478,7 +478,7 @@ const T = {
   d_tag:"CH-02 // walking dj · madrid",
   d_intro:"A DJ in portable format. Sets in different corners of the city, mixing sound, context and moment. Every set is recorded on foot.",
   sets:"Sets", set:"Set", watch:"Watch",
-  coffee:"Buy the DJ a coffee", coffee_p:"Your support fuels new mixes, live sessions and audiovisual projects.",
+  coffee:"A little coffee for the DJ", coffee_p:"Your support fuels new mixes, live sessions and audiovisual projects.",
   v_tag:"CH-03 // production company",
   v_intro:"Pushing the boundaries of creativity through film, animation and multimedia.",
   films:"Productions", where:"Where to watch",
@@ -530,12 +530,12 @@ function home(){
   return `<section class="hero">
     <div class="boot" id="boot" aria-hidden="true"></div>
     <h1><span class="wordmark" role="img" aria-label="Mantrixa">
-      <img class="base" src="img/logo-wordmark.webp" alt=""><img class="r" src="img/logo-wordmark.webp" alt=""><img class="b" src="img/logo-wordmark.webp" alt="">
+      <img class="base" src="img/logo-wordmark-v2.webp" alt=""><img class="r" src="img/logo-wordmark-v2.webp" alt=""><img class="b" src="img/logo-wordmark-v2.webp" alt="">
     </span></h1>
     <div class="who">
       <div style="display:grid;gap:14px"><p class="lede">${t("hero_lede")}</p><p style="color:var(--dim)">${t("hero_sub")}</p></div>
       <dl class="kv">${t("kv").map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join("")}</dl>
-      <figure class="portrait" style="margin:0"><img src="img/mantrixa-retrato.webp" alt="Retrato de Miguel Ángel Márquez (Mantrixa)"><figcaption>Miguel Ángel Márquez</figcaption></figure>
+      <figure class="portrait" style="margin:0;aspect-ratio:900/1342"><img src="img/mantrixa-retrato-v2.webp" alt="Retrato de Miguel Ángel Márquez (Mantrixa)"><figcaption>Miguel Ángel Márquez</figcaption></figure>
     </div>
   </section>
   <div class="channels">
@@ -560,9 +560,15 @@ function videoCard(id,title,meta,img){
 
 function mantrixa(){
   return head(t("m_tag"),"Mantrixa",t("m_intro")) + `
-  <section class="sec" id="trabajos"><header><h2>${t("works")}<small>${WORKS.length}</small></h2>
+  <section class="sec" id="trabajos"><header><h2>${t("works")}</h2>
     <div class="filters" role="group">${["all","film","stage","live"].map((f,i)=>`<button type="button" data-f="${f}" aria-pressed="${i===0}">${t("f_"+f)}</button>`).join("")}</div></header>
     <div class="works">${WORKS.map(workCard).join("")}</div></section>
+
+  <section class="sec"><header><h2>${t("disco")}<small>${t("disco_sub")}</small></h2></header>
+    <div class="disc">${DISCO.map(d=>`<a class="rel" href="${d.u}" target="_blank" rel="noopener"><div class="art">${artHTML(d,1)}</div>
+      <b>${d.t}</b><small>${d.type}${d.n?" · new":""}</small></a>`).join("")}</div>
+    <p style="color:var(--dim);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:28px 0 10px">${t("listen")}</p>
+    <div class="links">${L(MUSIC_LINKS)}</div></section>
 
   <section class="sec"><header><h2>${t("booth")}<small>DJ · VJ</small></h2></header>
     <p style="margin:0;max-width:60ch;color:var(--dim)">${t("booth_p")}</p>
@@ -571,15 +577,6 @@ function mantrixa(){
       <figure class="banner" style="margin-top:18px"><img src="img/banner-b2b.webp" alt="Mantrixa B2B Mauro PDZ en Carnal"><span>B2B Mauro PDZ · Carnal</span></figure>
     </div></section>
 
-  <section class="sec"><header><h2>${t("reels")}</h2></header>
-    <div class="sets">${videoCard("FF1J6AdSunY",t("reel1"),"","reel-edicion")}${videoCard("DWnSCHNA65Q",t("reel2"),"","reel-ia")}</div></section>
-
-  <section class="sec"><header><h2>${t("disco")}<small>${t("disco_sub")}</small></h2></header>
-    <div class="disc">${DISCO.map(d=>`<a class="rel" href="${d.u}" target="_blank" rel="noopener"><div class="art">${artHTML(d,1)}</div>
-      <b>${d.t}</b><small>${d.type}${d.n?" · new":""}</small></a>`).join("")}</div>
-    <p style="color:var(--dim);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:28px 0 10px">${t("listen")}</p>
-    <div class="links">${L(MUSIC_LINKS)}</div></section>
-
   <div class="split sec">
     <section><header style="margin-bottom:14px"><h2 style="font:800 clamp(30px,4vw,44px)/1 var(--f-display);text-transform:uppercase;margin:0">${t("art")}</h2></header>
       <p style="color:var(--dim);margin:0 0 14px">${t("art_p")}</p><div class="links">${L(ART)}</div></section>
@@ -587,12 +584,15 @@ function mantrixa(){
       <p style="color:var(--dim);margin:0 0 14px">${t("ent_p")}</p><a class="cta" href="#vestidor-violeta">${t("ent_go")} →</a></section>
   </div>
 
-  <section class="sec"><header><h2>${t("social")}</h2></header><div class="links">${L(SOCIAL)}</div></section>`;
+  <section class="sec"><header><h2>${t("social")}</h2></header><div class="links">${L(SOCIAL)}</div></section>
+
+  <section class="sec"><header><h2>${t("reels")}</h2></header>
+    <div class="sets">${videoCard("FF1J6AdSunY",t("reel1"),"","reel-edicion")}${videoCard("DWnSCHNA65Q",t("reel2"),"","reel-ia")}</div></section>`;
 }
 
 function dj(){
   return head(t("d_tag"),"DJportatil",t("d_intro"),"DJportatil") + `
-  <section class="sec"><header><h2>${t("sets")}<small>${SETS.length}</small></h2></header>
+  <section class="sec"><header><h2>${t("sets")}</h2></header>
     <div class="sets">${SETS.map(s=>videoCard(s.yt,`${t("set")} ${s.n}`,`<span>${s.place}</span><span style="text-align:right">${s.d}</span>`,s.img)).join("")}</div>
     </section>
   <div class="split sec">
@@ -618,17 +618,17 @@ function prodRow(p){
 function vv(){
   const m=WORKS.find(w=>w.t==="Morphogenesis"), f=WORKS.find(w=>w.t.startsWith("Sueño"));
   const prods=[
+    {id:"sueno-finlandes", t:f.t, img:"sueno-finlandes", ratio:"419/600", alt:"Afiche de Sueño finlandés y paranoico", cap:"Vestidor Violeta",
+     kind:t("k_short_horror"), text:f[lang], roles:f.r, links:[[t("watch")+" · Vimeo",f.link]]},
+    {id:"morphogenesis", t:m.t, img:"morphogenesis", ratio:"419/600", alt:"Afiche de Morphogenesis", cap:"Vestidor Violeta",
+     kind:t("k_short_exp"), text:m[lang], roles:m.r, links:[[t("watch")+" · Vimeo",m.link]]},
     {id:"la-entervista", t:"La Entervista", img:"entervista-poster", ratio:"1", alt:"Afiche de La Entervista: el conductor en un sillón frente a un telón amarillo",
      cap:t("host")+" · Mantrixa", kind:t("k_series"), text:t("ent_long"), roles:t("ent_roles"),
      links:[[t("watch")+" · YouTube","https://www.youtube.com/@LaEntervista"],["TikTok","https://www.tiktok.com/@laentervista"],["Instagram","https://www.instagram.com/laentervista"],["IMDb","https://www.imdb.com/title/tt38649700/"]],
-     extra:`<div class="eps"><h4>${t("ent_eps")} <small>${ENT_EPS.length}</small></h4><div class="eps-row">${ENT_EPS.map(e=>videoCard(e.yt,e.t,`<span>${e.s}</span><span style="text-align:right">${e.d}</span>`,e.img)).join("")}</div></div>`},
-    {id:"morphogenesis", t:m.t, img:"morphogenesis", ratio:"419/600", alt:"Afiche de Morphogenesis", cap:"Vestidor Violeta",
-     kind:t("k_short_exp"), text:m[lang], roles:m.r, links:[[t("watch")+" · Vimeo",m.link]]},
-    {id:"sueno-finlandes", t:f.t, img:"sueno-finlandes", ratio:"419/600", alt:"Afiche de Sueño finlandés y paranoico", cap:"Vestidor Violeta",
-     kind:t("k_short_horror"), text:f[lang], roles:f.r, links:[[t("watch")+" · Vimeo",f.link]]}
+     extra:`<div class="eps"><h4>${t("ent_eps")}</h4><div class="eps-row">${ENT_EPS.map(e=>videoCard(e.yt,e.t,`<span>${e.s}</span><span style="text-align:right">${e.d}</span>`,e.img)).join("")}</div></div>`}
   ];
   return head(t("v_tag"),"Vestidor Violeta",t("v_intro")) + `
-  <section class="sec"><header><h2>${t("films")}<small>${t("prod_count")}</small></h2></header>
+  <section class="sec"><header><h2>${t("films")}</h2></header>
     <div class="slate">${prods.map(prodRow).join("")}</div></section>
   <section class="sec"><header><h2>${t("where")}</h2></header><div class="links">${L(VV_LINKS)}</div></section>`;
 }
@@ -732,11 +732,11 @@ document.querySelectorAll(".lang button").forEach(x=>x.setAttribute("aria-presse
 addEventListener("hashchange",render);
 render();
 
-/* música de fondo: "O Por Deo" de Mantrixa, en loop a -3 dB.
+/* música de fondo: "O Por Deo" de Mantrixa, en loop a -6 dB.
    Los navegadores no dejan sonar audio sin interacción: arranca con el primer toque/click/tecla,
    salvo que el visitante lo haya silenciado antes. */
 const bgm=document.getElementById("bgm"), snd=document.getElementById("snd"), sndlbl=document.getElementById("sndlbl");
-bgm.volume=Math.pow(10,-3/20); /* -3 dB ≈ 0.708 */
+bgm.volume=Math.pow(10,-6/20); /* -6 dB ≈ 0.501 */
 let muted=false; try{muted=localStorage.getItem("mtx-mute")==="1"}catch(e){}
 function sndUI(){const on=!bgm.paused; snd.setAttribute("aria-pressed",on); sndlbl.textContent=on?t("music_on"):t("music_off");}
 function play(){bgm.play().then(sndUI).catch(sndUI)}
