@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MANTRIXA</title>
+<meta name="description" content="Mantrixa — Miguel Ángel Márquez. Artista audiovisual, cineasta y productor musical en Madrid. DJPortátil · Vestidor Violeta.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;800;900&family=Chivo+Mono:ital,wght@0,300;0,400;0,600;1,400&display=swap">
+<meta property="og:title" content="MANTRIXA">
+<meta property="og:description" content="Artista audiovisual, cineasta y productor musical. DJPortátil · Vestidor Violeta. Madrid.">
+<meta property="og:image" content="https://mantrixa.github.io/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#050505">
+<link rel="icon" href="img/logo.webp">
+<style>
+/* Layout: una "TV pirata" con 3 canales. Home = panel de sintonía; cada canal = transmisión propia con su color. */
+:root{
+  /* PALETA = mantrixa.bandcamp.com */
+  --void:#050505;      /* fondo (Bandcamp page bg) */
+  --panel:#111012;     /* superficies */
+  --line:#2a2530;      /* bordes */
+  --ink:#FED6FF;       /* texto (Bandcamp secondary) */
+  --dim:#a88fae;       /* texto secundario */
+  --mag:#EB5CFF;       /* magenta (Bandcamp primary text) */
+  --cyan:#06F3F5;      /* cian (Bandcamp links) */
+  --violet:#9a5cff;    /* Vestidor Violeta */
+  --amber:#ffb22e;     /* DJPortátil (calle, sodio de farola) */
+  --ch:var(--mag);     /* color del canal activo */
+  --f-display:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --f-mono:"Chivo Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+body[data-ch="djportatil"]{--ch:var(--amber)}
+body[data-ch="vestidor"]{--ch:var(--violet)}
+body[data-ch="mantrixa"]{--ch:var(--mag)}
+
+*{box-sizing:border-box}
+html{background:var(--void)}
+body{background:var(--void);color:var(--ink);font:400 15px/1.6 var(--f-mono);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  overflow-x:hidden;min-height:100%}
+a{color:inherit}
+::selection{background:var(--mag);color:var(--void)}
+:focus-visible{outline:2px solid var(--ch);outline-offset:3px}
+
+/* capas de atmósfera */
+.scan{position:fixed;inset:0;pointer-events:none;z-index:50;
+  background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(0,0,0,.28) 2px 3px);mix-blend-mode:multiply}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:49;
+  background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(0,0,0,.65))}
+#mosh{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60;display:block}
+
+.wrap{max-width:1180px;margin:0 auto}
+
+/* barra superior */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;display:flex;align-items:center;gap:14px;
+  padding-block:12px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--void) 88%,transparent);
+  backdrop-filter:blur(6px);flex-wrap:wrap}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:41;background:var(--void)}
+.logo{font:900 22px/1 var(--f-display);letter-spacing:.06em;text-decoration:none;text-transform:uppercase}
+.logo span{color:var(--ch)}
+.tuner{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.tuner a{font-size:12px;text-transform:uppercase;letter-spacing:.12em;text-decoration:none;padding:6px 10px;border:1px solid var(--line);color:var(--dim)}
+.tuner a:hover{color:var(--ink);border-color:var(--dim)}
+.tuner a[aria-current="page"]{color:var(--void);background:var(--ch);border-color:var(--ch)}
+.lang{display:flex;border:1px solid var(--line)}
+.lang button{all:unset;cursor:pointer;font-size:12px;padding:6px 9px;letter-spacing:.1em;color:var(--dim)}
+.lang button[aria-pressed="true"]{color:var(--void);background:var(--ink)}
+
+/* glitch de títulos */
+.gl{position:relative;display:inline-block}
+.gl::before,.gl::after{content:attr(data-t);position:absolute;inset:0;pointer-events:none}
+.gl::before{color:var(--mag);transform:translate(-2px,0);mix-blend-mode:screen;clip-path:inset(0 0 55% 0);animation:g1 3.8s infinite steps(1)}
+.gl::after{color:var(--cyan);transform:translate(2px,0);mix-blend-mode:screen;clip-path:inset(55% 0 0 0);animation:g2 3.1s infinite steps(1)}
+@keyframes g1{0%,86%,100%{transform:translate(-2px,0);clip-path:inset(0 0 55% 0)}88%{transform:translate(-9px,-2px);clip-path:inset(12% 0 60% 0)}90%{transform:translate(6px,1px);clip-path:inset(40% 0 30% 0)}92%{transform:translate(-4px,0);clip-path:inset(70% 0 5% 0)}}
+@keyframes g2{0%,80%,100%{transform:translate(2px,0);clip-path:inset(55% 0 0 0)}82%{transform:translate(10px,2px);clip-path:inset(5% 0 75% 0)}85%{transform:translate(-7px,0);clip-path:inset(50% 0 20% 0)}}
+
+/* HOME */
+.hero{position:relative;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0 calc(-1*max(16px,env(safe-area-inset-left,0px))) auto;height:min(520px,70vw);z-index:-1;
+  background:url(img/bg-espacio.webp) center/cover no-repeat;opacity:.55;
+  mask-image:linear-gradient(#000 40%,transparent);-webkit-mask-image:linear-gradient(#000 40%,transparent)}
+.boot{padding-block:44px 8px;color:var(--dim);font-size:13px;min-height:7.5em}
+.boot b{color:var(--ch);font-weight:400}
+.hero h1{margin:6px 0 0;line-height:0}
+.wordmark{position:relative;display:block;width:min(100%,980px);aspect-ratio:1600/426}
+.wordmark img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.wordmark .r,.wordmark .b{mix-blend-mode:screen;opacity:.85}
+.wordmark .r{filter:url(#tint-m);animation:wm1 4.2s infinite steps(1)}
+.wordmark .b{filter:url(#tint-c);animation:wm2 3.6s infinite steps(1)}
+.wordmark .base{filter:brightness(.9)}
+@keyframes wm1{0%,84%,100%{transform:translate(-3px,0);clip-path:inset(0)}86%{transform:translate(-16px,-3px);clip-path:inset(20% 0 52% 0)}88%{transform:translate(10px,2px);clip-path:inset(58% 0 12% 0)}90%{transform:translate(-5px,0);clip-path:inset(0 0 70% 0)}}
+@keyframes wm2{0%,78%,100%{transform:translate(3px,0);clip-path:inset(0)}80%{transform:translate(18px,3px);clip-path:inset(40% 0 35% 0)}83%{transform:translate(-9px,0);clip-path:inset(5% 0 80% 0)}}
+.hero .who{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.6fr);gap:28px;margin-top:26px;align-items:start}
+.portrait{position:relative;aspect-ratio:3/4;max-width:100%;border:1px solid var(--line);overflow:hidden;background:#000}
+.portrait img{width:100%;height:100%;object-fit:cover;display:block}
+.portrait figcaption{position:absolute;left:0;bottom:0;font-size:10px;letter-spacing:.18em;padding:4px 6px;background:var(--void);color:var(--ch);text-transform:uppercase}
+
+/* glitch al pasar por imágenes */
+.art img,.portrait img,.banner img{transition:filter .15s}
+.work:hover .art img,.rel:hover .art img,.portrait:hover img,.banner:hover img{animation:imgjit .45s steps(3) infinite;
+  filter:drop-shadow(-4px 0 color-mix(in srgb,var(--mag) 75%,transparent)) drop-shadow(4px 0 color-mix(in srgb,var(--cyan) 75%,transparent)) saturate(1.3)}
+@keyframes imgjit{0%{transform:none;clip-path:inset(0)}33%{transform:translateX(-5px);clip-path:inset(12% 0 30% 0)}66%{transform:translateX(4px) skewX(-3deg);clip-path:inset(0 0 55% 0)}100%{transform:none;clip-path:inset(0)}}
+
+.banner{position:relative;margin-top:28px;aspect-ratio:16/6;max-width:100%;overflow:hidden;border:1px solid var(--line);background:#000}
+.banner img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.banner span{position:absolute;left:0;bottom:0;padding:6px 10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;background:var(--void);color:var(--ch)}
+.hero p{margin:0;max-width:62ch}
+.hero .lede{font-size:clamp(16px,1.6vw,19px);line-height:1.55}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:13px;color:var(--dim);margin:0}
+.kv dt{text-transform:uppercase;letter-spacing:.12em;font-size:11px;padding-top:3px}
+.kv dd{margin:0;color:var(--ink)}
+.channels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-block:44px 64px}
+.chan{--c:var(--cyan);position:relative;display:flex;flex-direction:column;gap:10px;min-height:260px;padding:18px;text-decoration:none;
+  border:1px solid var(--line);background:linear-gradient(160deg,color-mix(in srgb,var(--c) 10%,var(--panel)),var(--panel) 60%);overflow:hidden}
+.chan.dj{--c:var(--amber)}.chan.vv{--c:var(--violet)}
+.chan .no{font-size:11px;letter-spacing:.2em;color:var(--c);position:relative}
+.chan h2,.chan p{position:relative}
+.chan .bgimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.32;filter:grayscale(.4) contrast(1.1);mix-blend-mode:screen;transition:opacity .2s}
+.chan:hover .bgimg{opacity:.6;filter:none;animation:imgjit .4s steps(3) infinite}
+.chan::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,var(--panel) 25%,transparent 80%);pointer-events:none}
+.chan>*{z-index:1}.chan .bgimg{z-index:0}.chan::after{z-index:0}
+.chan h2{font:900 clamp(38px,5vw,58px)/.86 var(--f-display);text-transform:uppercase;margin:auto 0 0}
+.chan p{margin:0;color:var(--dim);font-size:13px}
+.chan .noise{position:absolute;inset:0;opacity:.0;transition:opacity .2s;pointer-events:none;
+  background:repeating-linear-gradient(0deg,color-mix(in srgb,var(--c) 30%,transparent) 0 1px,transparent 1px 4px)}
+.chan:hover{border-color:var(--c)}
+.chan:hover .noise{opacity:1;animation:roll .4s steps(4) infinite}
+.chan:hover h2{animation:jit .25s steps(2) infinite;text-shadow:-3px 0 var(--mag),3px 0 var(--cyan)}
+@keyframes roll{to{background-position:0 16px}}
+@keyframes jit{50%{transform:translate(2px,-1px) skewX(-4deg)}}
+
+/* CANAL */
+.view{padding-block:36px 64px}
+.chhead{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:end;border-bottom:1px solid var(--line);padding-bottom:22px}
+.chhead .tag{font-size:11px;letter-spacing:.22em;color:var(--ch);text-transform:uppercase}
+.chhead h1{font:900 clamp(56px,11vw,150px)/.84 var(--f-display);text-transform:uppercase;margin:8px 0 0}
+.chhead p{max-width:60ch;margin:14px 0 0;color:var(--ink)}
+.rec{font-size:12px;color:var(--ch);letter-spacing:.14em;white-space:nowrap}
+.rec::before{content:"●";margin-right:6px;animation:blink 1.2s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.sec{margin-top:56px}
+.sec>header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.sec h2{font:800 clamp(30px,4vw,44px)/1 var(--f-display);text-transform:uppercase;margin:0;letter-spacing:.01em}
+.sec h2 small{font:400 12px var(--f-mono);color:var(--dim);letter-spacing:.14em;margin-left:10px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.filters button{all:unset;cursor:pointer;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border:1px solid var(--line);color:var(--dim)}
+.filters button[aria-pressed="true"]{border-color:var(--ch);color:var(--ch)}
+
+/* grilla de trabajos */
+.works{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.work{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--panel);min-width:0}
+.work .art{aspect-ratio:1;max-width:100%;position:relative;overflow:hidden;background:#000}
+.art img,.art canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.work:hover .art{animation:jit .2s steps(2) 3}
+.work .body{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.work .kind{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ch)}
+.work h3{font:800 26px/1 var(--f-display);text-transform:uppercase;margin:0;text-wrap:balance}
+.work p{margin:0;font-size:13px;color:var(--dim)}
+.roles{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:6px}
+.roles span{font-size:11px;padding:2px 6px;border:1px solid var(--line);color:var(--ink)}
+
+/* discografía */
+.disc{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.rel{text-decoration:none;display:flex;flex-direction:column;gap:8px;min-width:0}
+.rel .art{aspect-ratio:1;position:relative;overflow:hidden;border:1px solid var(--line);background:#000}
+.rel:hover .art{border-color:var(--ch)}
+.rel:hover .art canvas,.rel:hover .art img{filter:saturate(1.6) contrast(1.2);transform:translateX(3px)}
+.rel b{font:800 20px/1 var(--f-display);text-transform:uppercase}
+.rel small{font-size:11px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+
+/* lista de enlaces/señales */
+.links{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+.links a{display:flex;justify-content:space-between;gap:8px;padding:10px 12px;border:1px solid var(--line);text-decoration:none;font-size:13px}
+.links a::after{content:"↗";color:var(--dim)}
+.links a:hover{border-color:var(--ch);color:var(--ch)}
+
+/* sets / videos */
+.sets{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.set{border:1px solid var(--line);background:var(--panel);display:flex;flex-direction:column;min-width:0}
+.set .frame{aspect-ratio:16/9;max-width:100%;position:relative;background:#000;display:block;overflow:hidden}
+.set .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.set .frame canvas,.set .frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.set:hover .frame img{animation:imgjit .45s steps(3) infinite;filter:drop-shadow(-4px 0 color-mix(in srgb,var(--mag) 75%,transparent)) drop-shadow(4px 0 color-mix(in srgb,var(--cyan) 75%,transparent))}
+.set .play{z-index:2}
+.set .play{position:absolute;inset:auto 12px 12px auto;font-size:12px;letter-spacing:.12em;padding:6px 10px;background:var(--ch);color:var(--void);text-decoration:none;text-transform:uppercase}
+.set .meta{padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:baseline}
+.set .meta b{font:800 22px/1 var(--f-display);text-transform:uppercase;grid-column:1/-1}
+.set .meta span{font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums}
+
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+.note{border:1px dashed var(--line);padding:14px;color:var(--dim);font-size:13px}
+.cta{display:inline-flex;gap:8px;align-items:center;padding:10px 14px;background:var(--ch);color:var(--void);text-decoration:none;text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:600}
+
+/* contacto */
+form{display:grid;gap:12px}
+label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);display:grid;gap:6px}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--void);border:1px solid var(--line);padding:10px 12px;border-radius:0;width:100%}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--ch)}
+textarea{min-height:130px;resize:vertical}
+button.send{all:unset;cursor:pointer;justify-self:start;padding:11px 16px;background:var(--ch);color:var(--void);letter-spacing:.14em;text-transform:uppercase;font-size:12px;font-weight:600}
+.status{font-size:13px;color:var(--ch);min-height:1.4em}
+
+footer{border-top:1px solid var(--line);padding-block:28px 40px;display:flex;flex-wrap:wrap;gap:12px 28px;color:var(--dim);font-size:12px}
+footer a{text-decoration:none}footer a:hover{color:var(--ch)}
+
+/* transición datamosh del contenido */
+main.mosh{animation:mosh .5s steps(6) 1}
+@keyframes mosh{
+  0%{clip-path:inset(0 0 0 0);transform:none;filter:none}
+  20%{clip-path:inset(10% 0 40% 0);transform:translateX(-14px) skewX(8deg);filter:hue-rotate(90deg) saturate(3)}
+  40%{clip-path:inset(50% 0 5% 0);transform:translateX(18px);filter:invert(.2) hue-rotate(-60deg)}
+  60%{clip-path:inset(0 0 70% 0);transform:translateX(-6px) scaleY(1.04)}
+  80%{clip-path:inset(30% 0 20% 0);transform:translateX(4px)}
+  100%{clip-path:inset(0 0 0 0);transform:none;filter:none}}
+
+@media (max-width:820px){
+  .hero .who,.split,.chhead{grid-template-columns:minmax(0,1fr)}
+  .portrait{max-width:260px}
+  .banner{aspect-ratio:16/9}
+  .channels{grid-template-columns:minmax(0,1fr)}
+  .chan{min-height:170px}
+  .tuner{margin-left:0;order:3;width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  #mosh{display:none}
+}
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="tint-m"><feColorMatrix type="matrix" values="0.92 0 0 0 0  0.36 0 0 0 0  1 0 0 0 0  0 0 0 1 0"/></filter>
+  <filter id="tint-c"><feColorMatrix type="matrix" values="0 0 0 0 0  0.95 0 0 0 0  0.96 0 0 0 0  0 0 0 1 0"/></filter>
+</svg>
+<canvas id="mosh" aria-hidden="true"></canvas>
+<div class="scan" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<div class="wrap">
+  <nav class="bar" aria-label="Canales">
+    <a class="logo" href="#" data-nav="home">MANTRI<span>X</span>A</a>
+    <div class="tuner">
+      <a href="#mantrixa" data-nav="mantrixa">CH-01 Mantrixa</a>
+      <a href="#djportatil" data-nav="djportatil">CH-02 DJPortátil</a>
+      <a href="#vestidor-violeta" data-nav="vestidor">CH-03 Vestidor Violeta</a>
+      <a href="#contacto" data-nav="contacto" data-i18n="nav_contact">Contacto</a>
+    </div>
+    <div class="lang" role="group" aria-label="Idioma">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </nav>
+
+  <main id="main"></main>
+
+  <footer>
+    <span>© 2026 Miguel Ángel Márquez</span>
+    <span data-i18n="foot_city">Madrid ⇄ Buenos Aires</span>
+    <a href="https://linktr.ee/mantrixa" target="_blank" rel="noopener">linktr.ee/mantrixa</a>
+    <a href="https://mantrixa.bandcamp.com/" target="_blank" rel="noopener">bandcamp</a>
+    <a href="https://www.imdb.com/name/nm16643967/" target="_blank" rel="noopener">IMDb</a>
+  </footer>
+</div>
+
+<script>
+/* ================= DATOS ================= */
+const WORKS = [
+ {t:"Morphogenesis", img:"img/morphogenesis.webp", k:"film", by:"VV",
+  es:"Cortometraje experimental sobre la transformación de la identidad en la era digital. Texturas glitch, visuales generados con IA y un paisaje sonoro inmersivo donde lo humano y lo artificial se disuelven.",
+  en:"Experimental short film on identity transformation in the digital age. Glitch textures, AI-generated visuals and an immersive soundscape where human and artificial dissolve.",
+  r:["Director","Creator","Producer","Video & Sound Editor"], link:"https://linktr.ee/vestidorvioleta"},
+ {t:"Sueño finlandés y paranoico", img:"img/sueno-finlandes.webp", k:"film", by:"VV",
+  es:"Corto de Vestidor Violeta en un clima de tensión psicológica: realidad y paranoia se entrelazan. Terror y suspenso sobre la ansiedad y la percepción distorsionada.",
+  en:"A Vestidor Violeta short set in psychological tension where reality and paranoia intertwine. Horror and suspense about anxiety and distorted perception.",
+  r:["Creator","Director","Producer","Video & Sound Editor"], link:"https://vimeo.com/1064097394"},
+ {t:"Azul Reproche", img:"img/azul-reproche.webp", k:"stage",
+  es:"Tragicomedia contemporánea, intensa y poética sobre la neurosis, los vínculos rotos, la nostalgia y el deseo de redención.",
+  en:"A contemporary, intense and poetic tragicomedy about neurosis, broken bonds, nostalgia and the desire for redemption.",
+  r:["Live Sound","Sound Design","Composer","Scenic Creator","Social Media"]},
+ {t:"Mora Godoy 20 años", img:"img/mora-godoy.webp", k:"live",
+  es:"Retrospectiva de la carrera de la bailarina de tango Mora Godoy en el Teatro Coliseo.",
+  en:"A retrospective of tango dancer Mora Godoy's career at Teatro Coliseo.",
+  r:["3D Set Design","Live Multimedia","Mapping"]},
+ {t:"Closer", img:"img/closer.webp", k:"stage",
+  es:"Versión del texto de Patrick Marber sobre el amor, el dolor y las sexualidades plurales.",
+  en:"A staging of Patrick Marber's play on love, pain and plural sexualities.",
+  r:["3D Design","Visuals","Graphic Design","Social Media"]},
+ {t:"Metrochenta", img:"img/metrochenta.webp", k:"live",
+  es:"Producción de la Bienal de Arte Joven de Buenos Aires. Premio Estímulo a la Escritura (La Nación / Fundación Proa).",
+  en:"Produced by the Buenos Aires Young Art Biennial. Writing Encouragement Award (La Nación / Fundación Proa).",
+  r:["3D Set Design","Live Multimedia","Mapping"]},
+ {t:"Un grano de polvo suspendido en un rayo de sol", img:"img/grano-de-polvo.webp", k:"stage",
+  es:"Una canción de despedida: melodrama prematuro y áspero.",
+  en:"A farewell song: a premature and gritty melodrama.",
+  r:["Live Sound","Sound Design","Composer"]},
+ {t:"Una circunstancia denominada mundo", img:"img/circunstancia-mundo.webp", k:"stage",
+  es:"Un ritual para convocar recuerdos y mirar el cielo del desierto como punto de partida de un camino a casa.",
+  en:"A ritual to summon memories and read the desert sky as the start of a way home.",
+  r:["3D Design","Audiovisuals"]},
+ {t:"Los años fluorescentes", img:"img/anos-fluorescentes.webp", k:"stage",
+  es:"Un joven sin memoria cruza un mundo gris al borde de la extinción siguiendo el humo de su amigo cohete. Obra en dos partes transmitida online.",
+  en:"A young man without memory crosses a grey world on the brink of extinction, following his rocket friend's smoke. A two-part play streamed online.",
+  r:["Sound Design","Sound Editing"]},
+ {t:"La vida sin ficción", img:"img/vida-sin-ficcion.webp", k:"stage",
+  es:"Una novela sin final porque su autor muere de golpe; su hijo la publica y se vuelve best seller. Nueve personajes para tres actores.",
+  en:"A novel without an ending because its author dies suddenly; his son publishes it and it becomes a bestseller. Nine characters, three actors.",
+  r:["Visuals","Live Sound","Sound Design","Composer","Scenic Creator"]},
+ {t:"El peso del mundo", img:"img/peso-del-mundo.webp", k:"stage",
+  es:"Salicitina dibuja para que las cosas empiecen a existir: Blastín, el Ser Absolutamente Alto, y el Decrépito Sr. Allen.",
+  en:"Salicitina draws so things begin to exist: Blastín, the Absolutely Tall Being, and Decrepit Mr. Allen.",
+  r:["Live Drawings","Graphic Design","Social Media"]},
+ {t:"Yo duermo con la ropa del día", img:"img/yo-duermo.webp", k:"stage",
+  es:"Teatro documental en dos partes sobre historias reales de Ciudad Evita, La Matanza. Premio Estímulo del Complejo Teatral de Buenos Aires y Banco Ciudad.",
+  en:"Two-part documentary theatre built on real stories from Ciudad Evita, La Matanza. Encouragement Award from the Buenos Aires Theatre Complex and Banco Ciudad.",
+  r:["Live Sound","Sound Design","Composer"]},
+ {t:"Hijas", img:"img/hijas.webp", k:"stage",
+  es:"Dos actores del conurbano desesperados por actuar convierten el escenario en su campo de batalla. Si hace falta, existirán en su propia ficción.",
+  en:"Two actors from the Buenos Aires suburbs, desperate to act, turn the stage into their battleground. If needed, they'll exist inside their own fiction.",
+  r:["Live Sound","Sound Design","Composer","Scenic Creator","Social Media"]}
+];
+
+const DISCO = [
+ {t:"Untitled 4.wav", type:"single", img:"untitled-4", u:"https://mantrixa.bandcamp.com/track/untitled-4-wav", n:"new"},
+ {t:"Minimal Trixa", type:"album", img:"minimal-trixa", u:"https://mantrixa.bandcamp.com/album/minimal-trixa", n:"new"},
+ {t:"A Diosa Mi Gos", type:"single", img:"a-diosa-mi-gos", u:"https://mantrixa.bandcamp.com/track/a-diosa-mi-gos"},
+ {t:"Metal Dreams", type:"album", img:"metal-dreams", u:"https://mantrixa.bandcamp.com/album/metal-dreams"},
+ {t:"Industrial 1997", type:"album", img:"industrial-1997", u:"https://mantrixa.bandcamp.com/album/industrial-1997"},
+ {t:"Lofi Error 3", type:"album", img:"lofi-error-3", u:"https://mantrixa.bandcamp.com/album/lofi-error-3"},
+ {t:"Lofi Error 2", type:"album", img:"lofi-error-2", u:"https://mantrixa.bandcamp.com/album/lofi-error-2"},
+ {t:"Lofi Error", type:"album", img:"lofi-error", u:"https://mantrixa.bandcamp.com/album/lofi-error"},
+ {t:"Virtual Dreams (Remastered)", type:"album", img:"virtual-dreams-remastered", u:"https://mantrixa.bandcamp.com/album/virtual-dreams-remastered"},
+ {t:"Acid Dreams", type:"album", img:"acid-dreams", u:"https://mantrixa.bandcamp.com/album/acid-dreams"},
+ {t:"Virtual Dreams", type:"album", img:"virtual-dreams", u:"https://mantrixa.bandcamp.com/album/virtual-dreams"},
+ {t:"Proscenio y Bambalinas", type:"release", img:"proscenio", u:"https://open.spotify.com/artist/30ATOM87vmr5aSrjx7u7tf"},
+ {t:"Space Trip", type:"release", img:"space-trip", u:"https://open.spotify.com/artist/30ATOM87vmr5aSrjx7u7tf"},
+ {t:"Time to Deep", type:"release", img:"time-to-deep", u:"https://open.spotify.com/artist/30ATOM87vmr5aSrjx7u7tf"}
+].map(d=>({...d,img:"img/"+d.img+".webp"}));
+
+const SETS = [
+ {n:"6", place:"Barcelona — Sagrada Família → Torre Glòries", d:"08·08·26", yt:"ge2up_-sgIQ", img:"set-6"},
+ {n:"5", place:"Parque del Retiro", d:"11·06·26", yt:"yxg-09XWInY", img:"set-5"},
+ {n:"4", place:"Arganzuela", d:"29·05·26", yt:"61BoxnKXfQs", img:"set-4"},
+ {n:"3", place:"Madrid 3 AM — Nocturno", d:"29·04·26", yt:"Ren3jfs7Dak", img:"set-3"},
+ {n:"2", place:"Madrid Río", d:"14·04·26", yt:"hvXX4816niY", img:"set-2"},
+ {n:"1", place:"Salamanca", d:"27·02·26", yt:"F_bNomwIRdY", img:"set-1"},
+ {n:"Beta", place:"DJPortátil", d:"—", yt:"yHPDKM_j4nk", img:"set-beta"}
+];
+
+const L = (list)=>list.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join("");
+const MUSIC_LINKS = [["Spotify","https://open.spotify.com/artist/30ATOM87vmr5aSrjx7u7tf"],["Bandcamp","https://mantrixa.bandcamp.com/"],["Apple Music","https://music.apple.com/us/artist/mantrixa/1417804278"],["YouTube Music","https://music.youtube.com/channel/UCS94jEhr4PuaShmbNuMUSRQ"],["SoundCloud","https://soundcloud.com/mantrixa"],["Mixcloud","https://www.mixcloud.com/mantrixa/"],["Deezer","https://www.deezer.com/en/artist/48977511"],["Amazon Music","https://music.amazon.com/es-ar/artists/B07FPX7VKP/mantrixa"]];
+const SOCIAL = [["Instagram","https://www.instagram.com/mantrixa"],["YouTube","https://www.youtube.com/@mantrixa"],["TikTok","https://www.tiktok.com/@mantrixa"],["Twitch","https://www.twitch.tv/mantrixa"],["LinkedIn","https://www.linkedin.com/in/mantrixa/"],["X","https://x.com/mantrxa"],["Facebook","https://www.facebook.com/mantrixaTV"],["IMDb","https://www.imdb.com/name/nm16643967/"]];
+const ART = [["Zora","https://zora.co/mantrixa"],["OpenSea","https://opensea.io/mantrixa"],["Foundation","https://foundation.app/@mantrixa"],["Politrixa · Redbubble","http://mantrixa.redbubble.com"]];
+const DJ_LINKS = [["YouTube","https://youtu.be/yHPDKM_j4nk"],["Mixcloud","https://www.mixcloud.com/djportatil"],["Instagram","https://www.instagram.com/djportatil"],["TikTok","https://www.tiktok.com/@djportatil"],["X","https://x.com/djportatil"],["Clásicos 2K · Mixcloud","https://www.mixcloud.com/mantrixa/"]];
+const VV_LINKS = [["Vimeo","https://vimeo.com/vestidorvioleta"],["IMDb","https://www.imdb.com/search/title/?companies=co1092474"],["FilmFreeway","https://filmfreeway.com/VestidorVioleta"],["Sueño finlandés y paranoico","https://vimeo.com/1064097394"]];
+
+/* ================= I18N ================= */
+const T = {
+ es:{
+  nav_contact:"Contacto", foot_city:"Madrid ⇄ Buenos Aires",
+  boot:["inicializando señal…","sintonizando 3 canales","origen: buenos aires // base: madrid","listo."],
+  hero_lede:"Miguel Ángel Márquez es artista audiovisual, cineasta y productor musical con más de 15 años de oficio. Mezcla cine experimental, música electrónica y herramientas de inteligencia artificial para hacer piezas que exploran el borde entre imagen, sonido y tecnología.",
+  hero_sub:"Del cortometraje nominado al set de DJ/VJ, del mapping teatral al DJ que camina por la ciudad.",
+  kv:[["Alias","Mantrixa · DJPortátil"],["Productora","Vestidor Violeta"],["Base","Madrid, ES"],["Oficio","Dirección · Sonido · 3D · Mapping · IA · DJ/VJ"]],
+  ch1:"Artista multimedia, productor musical, DJ/VJ. Obra, discografía y arte digital.",
+  ch2:"DJ que camina. Sets en movimiento por Madrid y Barcelona.",
+  ch3:"Productora de cine, animación y multimedia.",
+  tune:"sintonizar →",
+  m_tag:"CH-01 // artista multimedia · dj · vj",
+  m_intro:"Audiovisual, cine, sonido para escena, mapping, música electrónica y arte con IA. Es el canal madre: todo lo demás sale de acá.",
+  works:"Trabajos", f_all:"Todo", f_film:"Cine", f_stage:"Escena", f_live:"Multimedia en vivo",
+  k_film:"Cortometraje", k_stage:"Teatro / Escena", k_live:"Multimedia en vivo",
+  booth:"En cabina", booth_p:"Como DJ fijo y VJ también soy Mantrixa: sets en clubes y eventos, con visuales propios en vivo.",
+  reels:"Reels", reel1:"Edición & Motion Graphics", reel2:"Reel generado con IA · 90 s",
+  disco:"Discografía", disco_sub:"neo-futurismo · cyberpunk · retro · lofi · glitch",
+  listen:"Escuchar en",
+  art:"Arte digital", art_p:"Piezas digitales y colecciones on-chain, más la línea de merch Politrixa.",
+  ent:"La Entervista", ent_p:"Un talk show absurdo con entrevistados generados por IA. Parodia, cortes cortos y personajes que no existen.",
+  ent_cta:"Ver La Entervista",
+  social:"Señales",
+  d_tag:"CH-02 // walking dj · madrid",
+  d_intro:"DJ en formato portátil. Sets en distintos lugares de la ciudad, mezclando sonido, contexto y momento. Cada set se graba caminando.",
+  sets:"Sets", set:"Set", watch:"Ver set",
+  coffee:"Un cafecito pal DJ", coffee_p:"Tu apoyo impulsa nuevos mixes, sesiones en vivo y proyectos audiovisuales.",
+  v_tag:"CH-03 // productora",
+  v_intro:"Empujando los límites de la creatividad a través del cine, la animación y lo multimedia.",
+  films:"Producciones", where:"Dónde ver",
+  c_tag:"canal abierto", c_title:"Contacto",
+  c_intro:"Proyectos, bookings de DJ/VJ, cine, mapping o colaboraciones. Escribí y te respondo.",
+  c_name:"Nombre", c_mail:"Email", c_topic:"Tema", c_msg:"Mensaje", c_send:"Enviar señal",
+  c_topics:["Booking DJ / VJ","Proyecto audiovisual","Vestidor Violeta","Otro"],
+  c_preview:"Vista previa: el formulario se conecta a tu mail cuando publiquemos la página.",
+  embed_note:"En la versión publicada estos videos se reproducen acá mismo."
+ },
+ en:{
+  nav_contact:"Contact", foot_city:"Madrid ⇄ Buenos Aires",
+  boot:["initializing signal…","tuning 3 channels","origin: buenos aires // base: madrid","ready."],
+  hero_lede:"Miguel Ángel Márquez is an audiovisual artist, filmmaker and music producer with over 15 years in the craft. He blends experimental cinema, electronic music and artificial intelligence tools into work that explores the edge between image, sound and technology.",
+  hero_sub:"From award-nominated short films to DJ/VJ sets, from theatre mapping to a DJ who walks the city.",
+  kv:[["Aliases","Mantrixa · DJPortátil"],["Studio","Vestidor Violeta"],["Based in","Madrid, ES"],["Craft","Direction · Sound · 3D · Mapping · AI · DJ/VJ"]],
+  ch1:"Multimedia artist, music producer, DJ/VJ. Work, discography and digital art.",
+  ch2:"Walking DJ. Sets on the move through Madrid and Barcelona.",
+  ch3:"Film, animation and multimedia production company.",
+  tune:"tune in →",
+  m_tag:"CH-01 // multimedia artist · dj · vj",
+  m_intro:"Audiovisual, film, stage sound, mapping, electronic music and AI art. The mother channel: everything else comes out of here.",
+  works:"Work", f_all:"All", f_film:"Film", f_stage:"Stage", f_live:"Live multimedia",
+  k_film:"Short film", k_stage:"Theatre / Stage", k_live:"Live multimedia",
+  booth:"In the booth", booth_p:"As a resident DJ and VJ I'm Mantrixa too: club and event sets with my own live visuals.",
+  reels:"Reels", reel1:"Editing & Motion Graphics", reel2:"AI-generated reel · 90 s",
+  disco:"Discography", disco_sub:"neo-futurism · cyberpunk · retro · lofi · glitch",
+  listen:"Listen on",
+  art:"Digital art", art_p:"Digital pieces and on-chain collections, plus the Politrixa merch line.",
+  ent:"La Entervista", ent_p:"An absurd talk show with AI-generated guests. Parody, short cuts and characters who don't exist.",
+  ent_cta:"Watch La Entervista",
+  social:"Signals",
+  d_tag:"CH-02 // walking dj · madrid",
+  d_intro:"A DJ in portable format. Sets in different corners of the city, mixing sound, context and moment. Every set is recorded on foot.",
+  sets:"Sets", set:"Set", watch:"Watch set",
+  coffee:"Buy the DJ a coffee", coffee_p:"Your support fuels new mixes, live sessions and audiovisual projects.",
+  v_tag:"CH-03 // production company",
+  v_intro:"Pushing the boundaries of creativity through film, animation and multimedia.",
+  films:"Productions", where:"Where to watch",
+  c_tag:"open channel", c_title:"Contact",
+  c_intro:"Projects, DJ/VJ bookings, film, mapping or collaborations. Write and I'll get back to you.",
+  c_name:"Name", c_mail:"Email", c_topic:"Topic", c_msg:"Message", c_send:"Send signal",
+  c_topics:["DJ / VJ booking","Audiovisual project","Vestidor Violeta","Other"],
+  c_preview:"Preview: the form connects to your inbox once the page is published.",
+  embed_note:"In the published version these videos play right here."
+ }
+};
+let lang = "es";
+try{ lang = localStorage.getItem("mtx-lang") || ((navigator.language||"es").slice(0,2)==="en" ? "en" : "es"); }catch(e){}
+if(!T[lang]) lang="es";
+const t = k => T[lang][k];
+
+/* ¿estamos en hosting propio? (en la vista previa los embeds externos están bloqueados) */
+const CAN_EMBED = !/claude|anthropic/.test(location.hostname) && location.protocol.startsWith("http");
+
+/* ================= COVERS GENERATIVOS (fallback glitch) ================= */
+function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){return()=>{seed=(seed+0x6D2B79F5)|0;let x=Math.imul(seed^seed>>>15,1|seed);x^=x+Math.imul(x^x>>>7,61|x);return((x^x>>>14)>>>0)/4294967296}}
+function cover(canvas,title,accent){
+  const css=getComputedStyle(document.documentElement);
+  const cols=[css.getPropertyValue("--mag"),css.getPropertyValue("--cyan"),css.getPropertyValue("--violet"),css.getPropertyValue(accent||"--ch")].map(s=>s.trim());
+  const W=canvas.width=360,H=canvas.height=Math.round(360*(canvas.dataset.r||1));
+  const x=canvas.getContext("2d"),r=rng(hash(title));
+  x.fillStyle="#07050b";x.fillRect(0,0,W,H);
+  for(let i=0;i<26;i++){x.fillStyle=cols[Math.floor(r()*cols.length)];x.globalAlpha=.15+r()*.55;
+    const h=2+r()*H*.12;x.fillRect(r()*W*.4-40,r()*H,W*(.3+r()*.9),h)}
+  x.globalAlpha=1;x.font=`900 ${Math.round(W*.16)}px "Big Shoulders Display",Impact,sans-serif`;x.textBaseline="bottom";
+  const word=title.toUpperCase().split(" ").slice(0,3).join(" ");
+  const lines=word.length>10?word.split(" "):[word];
+  lines.forEach((ln,i)=>{const y=H-14-(lines.length-1-i)*W*.15;
+    x.fillStyle=cols[0];x.fillText(ln,12,y);x.fillStyle=cols[1];x.fillText(ln,16,y);x.fillStyle="#ece6f5";x.fillText(ln,14,y)});
+  /* desplazamiento datamosh de bloques */
+  for(let i=0;i<7;i++){const y=Math.floor(r()*H),h=4+Math.floor(r()*28),dx=Math.floor((r()-.5)*60);
+    const d=x.getImageData(0,y,W,Math.min(h,H-y));x.putImageData(d,dx,y)}
+}
+function artHTML(item,ratio,accent){
+  const id="c"+hash(item.t+ratio);
+  const img=item.img?`<img src="${item.img}" alt="" loading="lazy" onerror="this.remove()">`:"";
+  return `<canvas data-r="${ratio}" data-title="${item.t.replace(/"/g,"&quot;")}" data-acc="${accent||""}"></canvas>${img}`;
+}
+function paintCovers(root){root.querySelectorAll("canvas[data-title]").forEach(c=>cover(c,c.dataset.title,c.dataset.acc))}
+
+/* ================= VISTAS ================= */
+function home(){
+  return `<section class="hero">
+    <div class="boot" id="boot" aria-hidden="true"></div>
+    <h1><span class="wordmark" role="img" aria-label="Mantrixa">
+      <img class="base" src="img/logo-wordmark.webp" alt=""><img class="r" src="img/logo-wordmark.webp" alt=""><img class="b" src="img/logo-wordmark.webp" alt="">
+    </span></h1>
+    <div class="who">
+      <div style="display:grid;gap:14px"><p class="lede">${t("hero_lede")}</p><p style="color:var(--dim)">${t("hero_sub")}</p></div>
+      <dl class="kv">${t("kv").map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join("")}</dl>
+      <figure class="portrait" style="margin:0"><img src="img/mantrixa-retrato.webp" alt="Retrato de Miguel Ángel Márquez (Mantrixa)"><figcaption>Miguel Ángel Márquez</figcaption></figure>
+    </div>
+  </section>
+  <div class="channels">
+    <a class="chan" href="#mantrixa"><img class="bgimg" src="img/chrome.webp" alt=""><span class="noise"></span><span class="no">CH-01</span><h2>Mantrixa</h2><p>${t("ch1")}</p><span class="no">${t("tune")}</span></a>
+    <a class="chan dj" href="#djportatil"><img class="bgimg" src="img/banner-dj.webp" alt=""><span class="noise"></span><span class="no">CH-02</span><h2>DJ<br>Portátil</h2><p>${t("ch2")}</p><span class="no">${t("tune")}</span></a>
+    <a class="chan vv" href="#vestidor-violeta"><img class="bgimg" src="img/sueno-finlandes.webp" alt=""><span class="noise"></span><span class="no">CH-03</span><h2>Vestidor<br>Violeta</h2><p>${t("ch3")}</p><span class="no">${t("tune")}</span></a>
+  </div>`;
+}
+
+function head(tag,title,intro,glitchWord){
+  return `<header class="chhead"><div><div class="tag">${tag}</div><h1><span class="gl" data-t="${glitchWord||title}">${title}</span></h1><p>${intro}</p></div><div class="rec">LIVE</div></header>`;
+}
+function workCard(w){
+  return `<article class="work" data-k="${w.k}"><div class="art">${artHTML(w,.75)}</div><div class="body">
+    <span class="kind">${t("k_"+w.k)}${w.by?" · Vestidor Violeta":""}</span><h3>${w.t}</h3><p>${w[lang]}</p>
+    <div class="roles">${w.r.map(r=>`<span>${r}</span>`).join("")}</div></div></article>`;
+}
+function videoCard(id,title,meta,img){
+  const pic = img ? `<img src="img/${img}.webp" alt="" loading="lazy">` : `<canvas data-r=".5625" data-title="${title}"></canvas>`;
+  return `<article class="set"><div class="frame art" data-yt="${id}" data-title="${title}">${pic}<a class="play" href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">▶ ${t("watch")}</a></div><div class="meta"><b>${title}</b>${meta||""}</div></article>`;
+}
+
+function mantrixa(){
+  return head(t("m_tag"),"Mantrixa",t("m_intro")) + `
+  <section class="sec" id="trabajos"><header><h2>${t("works")}<small>${WORKS.length}</small></h2>
+    <div class="filters" role="group">${["all","film","stage","live"].map((f,i)=>`<button type="button" data-f="${f}" aria-pressed="${i===0}">${t("f_"+f)}</button>`).join("")}</div></header>
+    <div class="works">${WORKS.map(workCard).join("")}</div></section>
+
+  <section class="sec"><header><h2>${t("booth")}<small>DJ · VJ</small></h2></header>
+    <p style="margin:0;max-width:60ch;color:var(--dim)">${t("booth_p")}</p>
+    <div class="split" style="margin-top:0">
+      <figure class="banner" style="margin-top:18px"><img src="img/banner-dj.webp" alt="Mantrixa en cabina"><span>Mantrixa · live</span></figure>
+      <figure class="banner" style="margin-top:18px"><img src="img/banner-b2b.webp" alt="Mantrixa B2B Mauro PDZ en Carnal"><span>B2B Mauro PDZ · Carnal</span></figure>
+    </div></section>
+
+  <section class="sec"><header><h2>${t("reels")}</h2></header>
+    <div class="sets">${videoCard("FF1J6AdSunY",t("reel1"),"","reel-edicion")}${videoCard("DWnSCHNA65Q",t("reel2"),"","reel-ia")}</div></section>
+
+  <section class="sec"><header><h2>${t("disco")}<small>${t("disco_sub")}</small></h2></header>
+    <div class="disc">${DISCO.map(d=>`<a class="rel" href="${d.u}" target="_blank" rel="noopener"><div class="art">${artHTML(d,1)}</div>
+      <b>${d.t}</b><small>${d.type}${d.n?" · new":""}</small></a>`).join("")}</div>
+    <p style="color:var(--dim);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:28px 0 10px">${t("listen")}</p>
+    <div class="links">${L(MUSIC_LINKS)}</div></section>
+
+  <div class="split sec">
+    <section><header style="margin-bottom:14px"><h2 style="font:800 clamp(30px,4vw,44px)/1 var(--f-display);text-transform:uppercase;margin:0">${t("art")}</h2></header>
+      <p style="color:var(--dim);margin:0 0 14px">${t("art_p")}</p><div class="links">${L(ART)}</div></section>
+    <section><header style="margin-bottom:14px"><h2 style="font:800 clamp(30px,4vw,44px)/1 var(--f-display);text-transform:uppercase;margin:0">${t("ent")}</h2></header>
+      <p style="color:var(--dim);margin:0 0 14px">${t("ent_p")}</p><a class="cta" href="https://linktr.ee/laentervista" target="_blank" rel="noopener">${t("ent_cta")} ↗</a></section>
+  </div>
+
+  <section class="sec"><header><h2>${t("social")}</h2></header><div class="links">${L(SOCIAL)}</div></section>`;
+}
+
+function dj(){
+  return head(t("d_tag"),"DJPortátil",t("d_intro"),"DJPortátil") + `
+  <section class="sec"><header><h2>${t("sets")}<small>${SETS.length}</small></h2></header>
+    <div class="sets">${SETS.map(s=>videoCard(s.yt,`${t("set")} ${s.n}`,`<span>${s.place}</span><span style="text-align:right">${s.d}</span>`,s.img)).join("")}</div>
+    </section>
+  <div class="split sec">
+    <section><h2 style="font:800 clamp(30px,4vw,44px)/1 var(--f-display);text-transform:uppercase;margin:0 0 14px">${t("coffee")} ☕</h2>
+      <p style="color:var(--dim);margin:0 0 14px">${t("coffee_p")}</p><a class="cta" href="https://buymeacoffee.com/djportatil" target="_blank" rel="noopener">buymeacoffee.com/djportatil ↗</a></section>
+    <section><h2 style="font:800 clamp(30px,4vw,44px)/1 var(--f-display);text-transform:uppercase;margin:0 0 14px">${t("social")}</h2><div class="links">${L(DJ_LINKS)}</div></section>
+  </div>`;
+}
+
+function vv(){
+  const films = WORKS.filter(w=>w.by==="VV");
+  return head(t("v_tag"),"Vestidor Violeta",t("v_intro")) + `
+  <section class="sec"><header><h2>${t("films")}</h2></header>
+    <div class="works">${films.map(w=>workCard(w).replace('</div></article>',`<a class="cta" style="align-self:flex-start;margin-top:8px" href="${w.link}" target="_blank" rel="noopener">${t("watch").replace("set","film")} ↗</a></div></article>`)).join("")}</div></section>
+  <section class="sec"><header><h2>${t("where")}</h2></header><div class="links">${L(VV_LINKS)}</div></section>`;
+}
+
+function contacto(){
+  return head(t("c_tag"),t("c_title"),t("c_intro")) + `
+  <div class="split sec">
+    <form id="cform" novalidate>
+      <label for="f-name">${t("c_name")}<input id="f-name" name="name" autocomplete="name" required></label>
+      <label for="f-mail">${t("c_mail")}<input id="f-mail" name="email" type="email" autocomplete="email" required></label>
+      <label for="f-topic">${t("c_topic")}<select id="f-topic" name="topic">${t("c_topics").map(o=>`<option>${o}</option>`).join("")}</select></label>
+      <label for="f-msg">${t("c_msg")}<textarea id="f-msg" name="message" required></textarea></label>
+      <button class="send" type="submit">${t("c_send")} ▸</button>
+      <div class="status" id="fstatus" role="status"></div>
+    </form>
+    <div style="display:grid;gap:14px;align-content:start">
+      <div class="links">${L([["linktr.ee/mantrixa","https://linktr.ee/mantrixa"],["linktr.ee/djportatil","https://linktr.ee/djportatil"],["linktr.ee/vestidorvioleta","https://linktr.ee/vestidorvioleta"]])}</div>
+      <div class="links">${L(SOCIAL.slice(0,5))}</div>
+    </div>
+  </div>`;
+}
+
+/* ================= ROUTER + MOSH ================= */
+const ROUTES = {"":["home",home],"mantrixa":["mantrixa",mantrixa],"djportatil":["djportatil",dj],"vestidor-violeta":["vestidor",vv],"contacto":["contacto",contacto]};
+const main=document.getElementById("main");
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let first=true;
+
+function render(){
+  const key=(location.hash||"").slice(1);
+  const [ch,fn]=ROUTES[key]||ROUTES[""];
+  document.body.dataset.ch = ch==="home"||ch==="contacto" ? "mantrixa" : ch;
+  main.innerHTML=fn();
+  document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=t(el.dataset.i18n));
+  document.querySelectorAll(".tuner a").forEach(a=>{ if(a.dataset.nav===ch) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  document.documentElement.lang=lang;
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>paintCovers(main)); else paintCovers(main);
+  bind();
+  if(ch==="home") bootLog();
+  if(!first){ window.scrollTo(0,0); mosh(); }
+  first=false;
+}
+function bind(){
+  main.querySelectorAll(".filters button").forEach(b=>b.onclick=()=>{
+    main.querySelectorAll(".filters button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+    const f=b.dataset.f; main.querySelectorAll(".work").forEach(w=>w.hidden=!(f==="all"||w.dataset.k===f));
+    mosh(220);
+  });
+  if(CAN_EMBED) main.querySelectorAll(".frame[data-yt]").forEach(f=>f.querySelector(".play").addEventListener("click",e=>{
+    e.preventDefault(); mosh(260);
+    f.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${f.dataset.yt}?autoplay=1" title="${f.dataset.title}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+  }));
+  const form=document.getElementById("cform");
+  if(form) form.addEventListener("submit",e=>{e.preventDefault();
+    const st=document.getElementById("fstatus");
+    if(!form.checkValidity()){st.textContent=lang==="es"?"Completá nombre, un email válido y el mensaje.":"Fill in your name, a valid email and a message.";return}
+    st.textContent=t("c_preview");
+  });
+}
+let bootTimer;
+function bootLog(){
+  const el=document.getElementById("boot"); if(!el) return;
+  const lines=t("boot").map((s,i)=>`<b>&gt;</b> ${s}`);
+  clearTimeout(bootTimer);
+  if(reduce){el.innerHTML=lines.join("<br>");return}
+  el.innerHTML=lines.join("<br>"); /* visible en reposo; re-escribe con efecto */
+  let i=0; el.innerHTML="";
+  const step=()=>{ if(i<lines.length){ el.innerHTML+= (i?"<br>":"")+lines[i++]; bootTimer=setTimeout(step,180);} };
+  step();
+}
+
+/* canvas datamosh: bloques que se corren y sangran color */
+const mc=document.getElementById("mosh"),mx=mc.getContext("2d");
+function mosh(dur=480){
+  if(reduce) return;
+  main.classList.remove("mosh"); void main.offsetWidth; main.classList.add("mosh");
+  const W=mc.width=innerWidth,H=mc.height=innerHeight,col=getComputedStyle(document.body).getPropertyValue("--ch").trim();
+  const css=getComputedStyle(document.documentElement);
+  const pal=[col,css.getPropertyValue("--mag").trim(),css.getPropertyValue("--cyan").trim(),"#000"];
+  const t0=performance.now();
+  (function f(now){
+    const p=(now-t0)/dur; mx.clearRect(0,0,W,H);
+    if(p<1){
+      const n=Math.floor(18*(1-p))+4;
+      for(let i=0;i<n;i++){
+        mx.globalAlpha=(1-p)*(.25+Math.random()*.6);
+        mx.fillStyle=pal[Math.floor(Math.random()*pal.length)];
+        const h=Math.random()*H*.09+2; mx.fillRect(Math.random()*W*.5-W*.2,Math.random()*H,W*(.3+Math.random()*.9),h);
+      }
+      for(let y=0;y<H;y+=Math.random()*40+8){ mx.globalAlpha=(1-p)*.12; mx.fillStyle="#fff"; mx.fillRect(0,y,W,1); }
+      mx.globalAlpha=1; requestAnimationFrame(f);
+    } else mx.clearRect(0,0,W,H);
+  })(t0);
+}
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{
+  lang=b.dataset.lang; try{localStorage.setItem("mtx-lang",lang)}catch(e){}
+  document.querySelectorAll(".lang button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  render(); mosh(300);
+});
+document.querySelectorAll(".lang button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lang===lang));
+addEventListener("hashchange",render);
+render();
+</script>
+
+</body>
+</html>
