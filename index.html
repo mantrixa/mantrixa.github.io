@@ -90,7 +90,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .wordmark .r,.wordmark .b{mix-blend-mode:screen;opacity:.85}
 .wordmark .r{filter:url(#tint-m);animation:wm1 4.2s infinite steps(1)}
 .wordmark .b{filter:url(#tint-c);animation:wm2 3.6s infinite steps(1)}
-.wordmark .base{filter:brightness(.9)}
+.wordmark .base{filter:brightness(.9) contrast(1.15);mix-blend-mode:screen}
 @keyframes wm1{0%,84%,100%{transform:translate(-3px,0);clip-path:inset(0)}86%{transform:translate(-16px,-3px);clip-path:inset(20% 0 52% 0)}88%{transform:translate(10px,2px);clip-path:inset(58% 0 12% 0)}90%{transform:translate(-5px,0);clip-path:inset(0 0 70% 0)}}
 @keyframes wm2{0%,78%,100%{transform:translate(3px,0);clip-path:inset(0)}80%{transform:translate(18px,3px);clip-path:inset(40% 0 35% 0)}83%{transform:translate(-9px,0);clip-path:inset(5% 0 80% 0)}}
 .hero .who{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.6fr);gap:28px;margin-top:26px;align-items:start}
